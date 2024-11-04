@@ -2,7 +2,6 @@ import { Worker } from 'bullmq';
 import { EmailJobData, ReportJobData } from '../jobs/types';
 import { QUEUE_NAMES, REDIS_CONFIG } from '../config/queue.config';
 
-// Email Worker
 export const emailWorker = new Worker(
 	QUEUE_NAMES.EMAIL,
 	async (job) => {
@@ -11,7 +10,6 @@ export const emailWorker = new Worker(
 		console.log('Sending email to:', data.to);
 		console.log('Subject:', data.subject);
 
-		// Simulate email sending
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 
 		return { sent: true, timestamp: new Date() };
@@ -21,7 +19,6 @@ export const emailWorker = new Worker(
 	}
 );
 
-// Report Worker
 export const reportWorker = new Worker(
 	QUEUE_NAMES.REPORT,
 	async (job) => {
@@ -30,7 +27,6 @@ export const reportWorker = new Worker(
 		console.log('Generating report:', data.reportType);
 		console.log('For user:', data.userId);
 
-		// Simulate report generation
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 
 		return { generated: true, timestamp: new Date() };
@@ -40,7 +36,6 @@ export const reportWorker = new Worker(
 	}
 );
 
-// Setup event handlers
 [emailWorker, reportWorker].forEach((worker) => {
 	worker.on('completed', (job) => {
 		console.log(`✅ Job ${job.id} completed!`);

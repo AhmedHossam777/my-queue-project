@@ -38,7 +38,6 @@ export class CronScheduler {
 				'UTC' // Timezone
 			);
 
-			// Store the cron job for later reference
 			this.jobs.set(schedule.name, job);
 			job.start();
 
@@ -47,17 +46,15 @@ export class CronScheduler {
 	}
 
 	private async executeJob(schedule: JobType): Promise<void> {
-		// Get the appropriate queue for this job
 		const queue = this.queues.get(schedule.queue);
 		if (!queue) {
 			throw new Error(`Queue ${schedule.queue} not found`);
 		}
 		try {
-			// Add the job to the BullMQ queue
 			const job = await queue.add(schedule.name, schedule.data, {
 				jobId: `${schedule.name}-${format(new Date(), 'yyyy-MM-dd-HH-mm-ss')}`,
-				removeOnComplete: true, // Clean up completed jobs
-				removeOnFail: false, // Keep failed jobs for inspection
+				removeOnComplete: true,
+				removeOnFail: false,
 			});
 
 			console.log(`Added job ${job.id} to queue ${schedule.queue}`);
